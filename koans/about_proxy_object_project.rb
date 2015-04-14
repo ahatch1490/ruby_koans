@@ -20,10 +20,7 @@ class Proxy
     # ADD MORE CODE HERE
   end
   def method_missing(method_name,*args, &block)
-    p  method_name
-    p @object.respond_to? method_name
     if @object.respond_to? method_name 
-      
       @messages << method_name 
       append_message_call(method_name) 
       @object.public_send(method_name,*args) 
