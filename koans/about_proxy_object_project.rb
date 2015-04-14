@@ -15,10 +15,46 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 class Proxy
   def initialize(target_object)
     @object = target_object
+    @messages = []
+    @message_count = {}
     # ADD MORE CODE HERE
   end
-
-  # WRITE CODE HERE
+  def method_missing(method_name,*args, &block)
+    p  method_name
+    p @object.respond_to? method_name
+    if @object.respond_to? method_name 
+      
+      @messages << method_name 
+      append_message_call(method_name) 
+      @object.public_send(method_name,*args) 
+    else
+      raise NoMethodError 
+    end 
+  end
+  
+  def append_message_call(message_name)
+      message_count = @message_count[message_name]
+      if message_count 
+        message_count += 1 
+      else 
+        message_count = 1  
+      end 
+      @message_count[message_name] = message_count 
+      message_count  
+  end 
+  def called?(method_name)
+    @messages.include? method_name
+  end 
+  def messages()
+    @messages
+  end 
+  def number_of_times_called(method_name)
+    if @message_count[method_name] 
+      return @message_count[method_name]
+    end 
+    0
+      
+  end 
 end
 
 # The proxy object should pass the following Koan:
@@ -35,7 +71,7 @@ class AboutProxyObjectProject < Neo::Koan
 
   def test_tv_methods_still_perform_their_function
     tv = Proxy.new(Television.new)
-
+    
     tv.channel = 10
     tv.power
 
@@ -45,7 +81,7 @@ class AboutProxyObjectProject < Neo::Koan
 
   def test_proxy_records_messages_sent_to_tv
     tv = Proxy.new(Television.new)
-
+    
     tv.power
     tv.channel = 10
 
