@@ -1,5 +1,5 @@
 = My Completed Ruby Koans
-Just download and runnit should be all green
+Just download and run it. "Mountains are again merely mountains"
 
 = Neo Ruby Koans
 
